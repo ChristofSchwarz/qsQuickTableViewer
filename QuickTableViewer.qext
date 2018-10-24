@@ -1,0 +1,16 @@
+{
+	"name": "QuickTableViewer",
+	"description": "This puts a standard table object in place with all columns found in the data model",
+	"type": "visualization",
+	"version": "1.0.0",
+	"icon": "extension",
+	"author": "Christof Schwarz",
+	"homepage": "",
+	"keywords": "qlik-sense, visualization",
+	"preview": "preview.png",
+	"license": "",
+	"repository": "",
+	"dependencies": {
+		"qlik-sense": ">=3.0.x"
+	}
+}
