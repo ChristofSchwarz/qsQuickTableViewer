@@ -215,7 +215,7 @@ function (qlik, $) {
 							component: "button",
 							action: function(context) { convertToTable(context); }
 						},{	
-							label: "by Christof Schwarl & Ralf Becher"
+							label: "by Christof Schwarz & Ralf Becher"
 							,component: "text"
 						}					
 					]
