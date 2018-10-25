@@ -6,7 +6,7 @@ Qlik Sense Extension to quickly get all fields of a data-model table into a stan
 * you can specify a pattern for both, fields to include (default: *) and fields to exclude (default: %* ... all fields starting with %)
 * after you click the button "Get My Table" the object manipulates itself to become a standard Sense table object
 
-A co-production with (https://github.com/ralfbecher "Ralf Becher"), TIQ
+A co-production with [Ralf Becher](https://github.com/ralfbecher), TIQ Solutions
 
 ![alt text](https://github.com/ChristofSchwarz/pics/raw/master/quicktableview.gif "Screenshot")
 
