@@ -30,14 +30,14 @@ function (qlik, $) {
 
 		app.model.enigmaModel.evaluate('=Concat({<$Table={"' + layout.selectedTable + '"},'
 			+ '$Field={"(' + layout.fieldPattern + ')"}-{"(' + layout.ignoreFieldPattern + ')"}>} \'`\' & $Field & \'`\', \',\', $FieldNo)')
-		.then(ret => {
+		.then(function(ret) {
 			fieldList = eval('[' + ret + ']');
 			console.log('Field list: ', fieldList);
 			return(app.model.enigmaModel.getObject(ownId));
-		}).then(obj=>{
+		}).then(function(obj) {
 			thisObj = obj;
 			return(thisObj.getProperties());
-		}).then(prop=>{
+		}).then(function(prop) {
 			
 			// remove property entries of this extension 
 			delete prop.extensionMeta;
@@ -80,7 +80,8 @@ function (qlik, $) {
 					qNullSuppression: false,
 					qIncludeElemValue: false,
 					qShowTotal: false,
-					qShowAll: false
+					qShowAll: false,
+
 				});
 			};
 
@@ -112,6 +113,7 @@ function (qlik, $) {
 			};					
 			prop.multiline = { "wrapTextInHeaders": false, "wrapTextInCells": false };
 			prop.title = layout.selectedTable;
+			prop.totals = {};
 
 			// iterate through array and add to the arrays of the qHyperCubeDef
 
@@ -125,10 +127,10 @@ function (qlik, $) {
 
 			return(thisObj.setProperties(prop));
 
-		}).then(ret=>{
+		}).then(function(ret) {
 			console.log('Good bye. Object is now a table.');
 
-		}).catch(err=>{ 
+		}).catch(function(err) { 
 			console.error(err);	
 		});								
 
@@ -150,18 +152,49 @@ function (qlik, $) {
 					type: "items",		
 					items: [
 						{
-							"component": "dropdown",
-							"type": "string",
-							"options": async () => {
-								var opt = [];
-								let ret = await qlik.currApp(this).model.enigmaModel.evaluate("Concat(DISTINCT $Table,CHR(10))");
-								ret.split(String.fromCharCode(10)).forEach(elem=>{
-									opt.push({value: elem})
-								});
-								return(opt);
-							},
 							"ref": "selectedTable",
-							"label": "Choose table to show"
+							"type": "string",
+							component: {
+								template: `
+									<div class="pp-component pp-dropdown-component" >
+										<div class="label" >Choose table to show</div>
+										<div class="value" >
+											<select class="lui-select ng-pristine" ng-model="table" ng-options="option.value as option.label for option in options" ng-change="selectedTable()" >
+											</select>
+										</div>
+									</div>
+								`,
+								controller: ["$scope", "$element", "$timeout", function (scope, element, timeout) {
+									scope.table = "";
+
+									// a dummy option to start with
+									scope.options = [
+										{ 
+										  value: "-",
+										  label: "<please wait..>"
+										}
+									];
+		
+									scope.selectedTable = function() {
+										scope.data.selectedTable = scope.table;
+									}
+
+									// now initialize options (will update scope.options later)
+									qlik.currApp(this).model.enigmaModel.evaluate("Concat(DISTINCT $Table,CHR(10))")
+									.then(function(res){
+										scope.options = res.split(String.fromCharCode(10))
+											.map(function (e) { return { value: e, label: e} });
+										if (scope.options.length > 0) {
+											scope.table = scope.options[0].value;
+											scope.data.selectedTable = scope.table;
+										}
+									})
+									.catch(function(err) {
+										console.error(err);
+									});
+
+								}]
+							}	
 						},					
 						{	
 							label: "Include columns (wildcard pattern)"
@@ -180,9 +213,9 @@ function (qlik, $) {
 						},{
 							label: "Get my table!",
 							component: "button",
-							action: context => { convertToTable(context); }
+							action: function(context) { convertToTable(context); }
 						},{	
-							label: "by Christof Schwarz"
+							label: "by Christof Schwarl & Ralf Becher"
 							,component: "text"
 						}					
 					]
