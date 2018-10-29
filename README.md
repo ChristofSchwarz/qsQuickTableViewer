@@ -10,3 +10,6 @@ A co-production with [Ralf Becher](https://github.com/ralfbecher), TIQ Solutions
 
 ![alt text](https://github.com/ChristofSchwarz/pics/raw/master/quicktableview.gif "Screenshot")
 
+Known limitations:
+- Does not work in Internet Explorer. However, its result is a table, which will work in IE
+
