@@ -21,32 +21,32 @@ function (qlik, $) {
 		.then(function(ret) {
 			fieldList = eval('[' + ret + ']');
 			console.log('Field list: ', fieldList);
-			return(app.model.enigmaModel.getObject(ownId));
+			return app.model.enigmaModel.getObject(ownId);
 		}).then(function(obj) {
 			thisObj = obj;
 			// Use visualization API to create a new table
-			return(app.visualization.create('table',fieldList, {title: layout.selectedTable}));
+			return app.visualization.create('table',fieldList, {title: layout.selectedTable});
 		}).then(function(obj) {
 			newTable = obj;
 			// get properties of new table object
-			return(newTable.model.getProperties());
-		}).then(prop=>{
+			return newTable.model.getProperties();
+		}).then(function(prop) {
 			console.log('newTable properties',prop);
 			// manipulate the id to match the current extension object's id and
 			// overwrite current extension object with the new table properties
 			prop.qInfo.qId = ownId;
-			return(thisObj.setProperties(prop));
-		}).then(ret=>{
+			return thisObj.setProperties(prop);
+		}).then(function(ret) {
 			newTable.close();
 			// change the object type to "table" also in the sheet properties 
 			var currSheet = qlik.navigation.getCurrentSheetId();
-			return(app.model.enigmaModel.getObject(currSheet.sheetId));
-		}).then(sheetObj=>{
-			sheetObj.properties.cells.forEach(cell=>{
+			return app.model.enigmaModel.getObject(currSheet.sheetId);
+		}).then(function(sheetObj) {
+			sheetObj.properties.cells.forEach(function(cell) {
 				if (cell.name == ownId) cell.type = 'table';
 			});
-			return(sheetObj.setProperties(sheetObj.properties));
-		}).then(ret=>{
+			return sheetObj.setProperties(sheetObj.properties);
+		}).then(function(ret) {
 			console.log('Good bye. Object is now a table.');
 		}).catch(function(err) { 
 			console.error(err);	
@@ -73,15 +73,14 @@ function (qlik, $) {
 							"ref": "selectedTable",
 							"type": "string",
 							component: {
-								template: `
-									<div class="pp-component pp-dropdown-component" >
-										<div class="label" >Choose table to show</div>
-										<div class="value" >
-											<select class="lui-select ng-pristine" ng-model="table" ng-options="option.value as option.label for option in options" ng-change="selectedTable()" >
-											</select>
-										</div>
-									</div>
-								`,
+								template: 
+									'<div class="pp-component pp-dropdown-component" >\
+										<div class="label" >Choose table to show</div>\
+										<div class="value" >\
+											<select class="lui-select ng-pristine" ng-model="table" ng-options="option.value as option.label for option in options" ng-change="selectedTable()" >\
+											</select>\
+										</div>\
+									</div>',
 								controller: ["$scope", "$element", "$timeout", function (scope, element, timeout) {
 									scope.table = "";
 
