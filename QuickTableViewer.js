@@ -1,10 +1,3 @@
-/*
-var config = {
-	host: window.location.hostname,
-	prefix: "/",
-	port: window.location.port,
-	isSecure: window.location.protocol === "https:"
-};*/
 define(["qlik", "jquery"],
 function (qlik, $) {
 
