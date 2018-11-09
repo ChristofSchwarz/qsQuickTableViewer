@@ -12,14 +12,17 @@ function (qlik, $) {
 		var newTable;
 		console.log('Selected table:', layout.selectedTable);
 		console.log('Fields used:', layout.fieldPattern);
-		console.log('Fields filtered:', layout.ignoreFieldPattern);	
+		console.log('Fields filtered:', layout.ignoreFieldPattern);
 
-		var setModifier = '{<$Table={"' + layout.selectedTable + '"},'
+		var setModifier = '{<$Table={' + layout.selectedTable + '},'
 			+ '$Field={"(' + layout.fieldPattern + ')"}-{"(' + layout.ignoreFieldPattern + ')"}>}';
 		// Use engine-formula to get a field list ... Concat($Field,',')
 		app.model.enigmaModel.evaluate("=Concat(" + setModifier + " '\"' & $Field & '\"', ',', $FieldNo)")
 		.then(function(ret) {
 			fieldList = eval('[' + ret + ']');
+			if (layout.limitFields > 0 && fieldList.length > layout.limitFields) {
+				fieldList = fieldList.slice(0, layout.limitFields)
+			}
 			console.log('Field list: ', fieldList);
 			return app.model.enigmaModel.getObject(ownId);
 		}).then(function(obj) {
@@ -75,14 +78,17 @@ function (qlik, $) {
 							component: {
 								template: 
 									'<div class="pp-component pp-dropdown-component" >\
-										<div class="label" >Choose table to show</div>\
-										<div class="value" >\
-											<select class="lui-select ng-pristine" ng-model="table" ng-options="option.value as option.label for option in options" ng-change="selectedTable()" >\
+										<div class="label" >Choose table(s) to show</div>\
+										<div class="value"  style="height: 380px;">\
+											<select multiple class="lui-input lui-list ng-pristine" style="height: 380px;overflow-x: auto;" ng-model="table" ng-change="selectedTable(table)" >\
+												<option class="lui-list__item" style="padding: 6px 0px 0px 2px;font-size: 14px;" ng-repeat="option in options" value="{{option.value}}" >{{option.label}}</option>\
 											</select>\
 										</div>\
 									</div>',
 								controller: ["$scope", "$element", "$timeout", function (scope, element, timeout) {
-									scope.table = "";
+									scope.tableBackup = [];
+									scope.table = [];
+									scope.data.selectedTable = "";
 
 									// a dummy option to start with
 									scope.options = [
@@ -92,19 +98,39 @@ function (qlik, $) {
 										}
 									];
 		
-									scope.selectedTable = function() {
-										scope.data.selectedTable = scope.table;
+									scope.selectedTable = function(table) {
+										// simulate multiple since ctrl-click seems to be blocked in panel
+										var t = "";
+										if (table.length > 0) {
+											if (table.length === 1) {
+												t = table[0];
+												var i = scope.tableBackup.indexOf(t);
+												if (i === -1) {
+													scope.tableBackup.push(t);
+												} else {
+													scope.tableBackup.splice(i, 1);
+												}
+											} else {
+												table.forEach(function(t) {
+													if (scope.tableBackup.indexOf(t) === -1) {
+														scope.tableBackup.push(t);
+													}
+												});
+											}
+											scope.data.selectedTable = scope.tableBackup.join(",");
+										} else {
+											scope.data.selectedTable = [];
+										}
+										timeout(function() {
+											scope.table = scope.tableBackup;
+										});
 									}
 
 									// now initialize options (will update scope.options later)
 									qlik.currApp(this).model.enigmaModel.evaluate("Concat(DISTINCT $Table,CHR(10))")
 									.then(function(res){
 										scope.options = res.split(String.fromCharCode(10))
-											.map(function (e) { return { value: e, label: e} });
-										if (scope.options.length > 0) {
-											scope.table = scope.options[0].value;
-											scope.data.selectedTable = scope.table;
-										}
+											.map(function (e) { return { value: '"' + e + '"', label: e} });
 									})
 									.catch(function(err) {
 										console.error(err);
@@ -112,6 +138,12 @@ function (qlik, $) {
 
 								}]
 							}	
+						},					
+						{	
+							label: "Limit Fields"
+							,type: "integer"
+							,defaultValue: 50
+							,ref: "limitFields"
 						},					
 						{	
 							label: "Include columns (wildcard pattern)"
