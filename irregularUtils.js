@@ -17,10 +17,8 @@ define([], function () {
           u = pair[0];
           v = pair[1];
           if (adjlist[u]) {
-            // append vertex v to edgelist of vertex u
             adjlist[u].push(v);
           } else {
-            // vertex u is not in adjlist, create new adjacency list for it
             adjlist[u] = [v];
           }
           if (adjlist[v]) {
@@ -42,10 +40,6 @@ define([], function () {
         while (q.length > 0) {
             v = q.shift();
             current_group.push(v);
-            // Go through adjacency list of vertex v, and push any unvisited
-            // vertex onto the queue.
-            // This is more efficient than our earlier approach of going
-            // through an edge list.
             adjV = adjlist[v];
             for (i = 0, len = adjV.length; i < len; i += 1) {
                 nextVertex = adjV[i];
@@ -61,8 +55,8 @@ define([], function () {
     function checkTableAssiciatons(qlik, app, selectedTables) {
         var objId = "", edgeList = [], adjList = {};
 
-        // check if multiple tables are connected
         if (selectedTables.length > 1) {
+            // check if multiple tables are connected
             // create a hypercube with all fields which links to at least 2 tables (result contains no data islands)
             return app.model.enigmaModel.createSessionObject({
                 "qInfo": { "qType": "HyperCube"	},
@@ -84,7 +78,7 @@ define([], function () {
                     });
                     adjList = edgeListToAdjList(edgeList);
                     var groups = [], visited = {}, v;
-                    // find groups of the graph
+                    // find groups (components) of the graph
                     for (v in adjList) {
                         if (adjList.hasOwnProperty(v) && !visited[v]) {
                             groups.push(bfs(v, adjList, visited));
