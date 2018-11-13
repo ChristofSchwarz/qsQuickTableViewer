@@ -8,4 +8,6 @@ Qlik Sense Extension to quickly get all fields of a data-model table into a stan
 
 A co-production with [Ralf Becher](https://github.com/ralfbecher), TIQ Solutions
 
+Thanks to Ralf, you can select multiple tables at once to get columns from more than 1 table. The code checks if there is a connection in the data model between the tables before adding its columns to avoid cartesean products with out-of-memory results. Ralf explains this here --> https://medium.com/@irregularbi/do-my-tables-associate-dc249d59ee89
+
 ![alt text](https://github.com/ChristofSchwarz/pics/raw/master/quicktableview.gif "Screenshot")
