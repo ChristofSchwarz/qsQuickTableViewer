@@ -15,13 +15,12 @@ define(["qlik",
                         component: {
                             template: 
                                 '<div class="pp-component pp-dropdown-component" >\
-                                    <div class="label" >Choose table(s) to show</div>\
-                                    <div class="value"  style="height: 380px;">\
-                                        <select multiple class="lui-input lui-list ng-pristine" style="height: 380px;overflow-x: auto;" ng-model="table" ng-change="selectedTable(table)" >\
-                                            <option class="lui-list__item" style="padding: 6px 0px 0px 2px;font-size: 14px;" ng-repeat="option in options" value="{{option.value}}" >{{option.label}}</option>\
+                                    <div class="label">Choose table(s) to show</div>\
+                                    <div class="value" style="height: 260px;">\
+                                        <select multiple class="lui-input lui-list ng-pristine" style="height: 260px;overflow-x: scroll;" ng-model="table" ng-change="selectedTable(table)" >\
+                                            <option title="{{option.label}}" style="padding: 4px 0px 4px 2px;font-size: 14px;height: 21px;border-bottom: 1px solid rgba(0,0,0,.1);" ng-repeat="option in options" value="{{option.value}}" >{{option.label}}</option>\
                                         </select>\
-                                    </div>\
-                                </div>',
+                                    </div>',
                             controller: ["$scope", "$element", "$timeout", function (scope, element, timeout) {
                                 scope.tableBackup = [];
                                 scope.table = [];
