@@ -3,17 +3,17 @@ define(["qlik",
     function (qlik, utils) {
         'use strict';
 
-		var settings = { 
-			// property panel definition
+        var settings = {
+            // property panel definition
             mysection: {
                 label: "Extension Settings",
-                type: "items",		
+                type: "items",
                 items: [
                     {
                         "ref": "selectedTable",
                         "type": "string",
                         component: {
-                            template: 
+                            template:
                                 '<div class="pp-component pp-dropdown-component" >\
                                     <div class="label">Choose table(s) to show</div>\
                                     <div class="value" style="height: 260px;">\
@@ -28,13 +28,13 @@ define(["qlik",
 
                                 // a dummy option to start with
                                 scope.options = [
-                                    { 
+                                    {
                                         value: "-",
                                         label: "please wait..."
                                     }
                                 ];
 
-                                scope.selectedTable = function(table) {
+                                scope.selectedTable = function (table) {
                                     // simulate multiple since ctrl-click seems to be blocked in panel
                                     var t = "";
                                     if (table.length > 0) {
@@ -47,7 +47,7 @@ define(["qlik",
                                                 scope.tableBackup.splice(i, 1);
                                             }
                                         } else {
-                                            table.forEach(function(t) {
+                                            table.forEach(function (t) {
                                                 if (scope.tableBackup.indexOf(t) === -1) {
                                                     scope.tableBackup.push(t);
                                                 }
@@ -57,55 +57,73 @@ define(["qlik",
                                     } else {
                                         scope.data.selectedTable = [];
                                     }
-                                    timeout(function() {
+                                    timeout(function () {
                                         scope.table = scope.tableBackup;
                                     });
                                 }
 
                                 // now initialize options (will update scope.options later)
                                 qlik.currApp(this).model.enigmaModel.evaluate("Concat(DISTINCT $Table,CHR(10))")
-                                .then(function(res){
-                                    scope.options = res.split(String.fromCharCode(10))
-                                        .map(function (e) { return { value: e, label: e} });
-                                })
-                                .catch(function(err) {
-                                    console.error(err);
-                                });
+                                    .then(function (res) {
+                                        scope.options = res.split(String.fromCharCode(10))
+                                            .map(function (e) { return { value: e, label: e } });
+                                    })
+                                    .catch(function (err) {
+                                        console.error(err);
+                                    });
 
                             }]
-                        }	
-                    },					
-                    {	
+                        }
+                    },
+                    {
                         label: "Limit Fields"
-                        ,type: "integer"
-                        ,defaultValue: 50
-                        ,ref: "limitFields"
-                    },					
-                    {	
+                        , type: "integer"
+                        , defaultValue: 50
+                        , ref: "limitFields"
+                    },
+                    {
                         label: "Include columns (wildcard pattern)"
-                        ,type: "string"
-                        ,defaultValue: "*"
-                        ,ref: "fieldPattern"
-                    },					
-                    {	
+                        , type: "string"
+                        , defaultValue: "*"
+                        , ref: "fieldPattern"
+                    },
+                    {
                         label: "Ignore columns (wildcard pattern)"
-                        ,type: "string"
-                        ,defaultValue: "%*"
-                        ,ref: "ignoreFieldPattern"
-                    },{	
+                        , type: "string"
+                        , defaultValue: "%*"
+                        , ref: "ignoreFieldPattern"
+                    }, {
                         label: "use '|' as separator"
-                        ,component: "text"
-                    },{
+                        , component: "text"
+                    }, {
+                        label: 'Remove table prefix from label',
+                        type: 'boolean',
+                        ref: 'boolRemovePrefix',
+                        defaultValue: false
+                    }, {
                         label: "Get my table!",
                         component: "button",
-                        action: function(context) { utils.convertToTable(qlik, context); }
-                    },{	
+                        action: function (context) { utils.convertToTable(qlik, context); }
+                    }, {
                         label: "by Christof Schwarz & Ralf Becher"
-                        ,component: "text"
-                    }					
+                        , component: "text"
+                    }/*, {
+                        type: "string",
+                        ref: "tables",
+                        label: "Table(s) to show",
+                        component: "dropdown",
+                        options: function () {
+                            var app = qlik.currApp();
+                            var enigma = app.model.enigmaModel;
+                            return enigma.evaluate("concat(DISTINCT $Table, '\"},{\"value\":\"')").then(function (res) {
+                                var fieldlist = JSON.parse('[{"value":"' + res + '"}]');
+                                return fieldlist;
+                            });
+                        }
+                    }*/
                 ]
-            }	
- 		};				
+            }
+        };
 
 
         return {
