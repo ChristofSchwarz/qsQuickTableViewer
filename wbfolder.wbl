@@ -1,2 +1,4 @@
 QuickTableViewer.qext;
-QuickTableViewer.js
+QuickTableViewer.js;
+properties.js;
+irregularUtils.js
