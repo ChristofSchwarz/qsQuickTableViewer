@@ -1,7 +1,7 @@
 # qsQuickTableViewer
 Qlik Sense Extension to quickly get all fields of a data-model table into a standard Qlik Sense Table object.
 
-*New 10-Sep-2020*: a checkbox that allows to remove a (table-)prefix from Field Names in the label of the column e.g. Customers.Name -> Name 
+**New 10-Sep-2020**: a checkbox that allows to remove a (table-)prefix from Field Names in the label of the column e.g. Customers.Name -> Name 
 (everything before the first "." is removed then)
 
 * Place the extension on the sheet where you like to get the table object
