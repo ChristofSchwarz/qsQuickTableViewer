@@ -130,12 +130,16 @@ define([], function () {
                     var setModifier = '{<$Table={' + selectedTablesStr + '},'
                         + '$Field={"(' + layout.fieldPattern + ')"}-{"(' + layout.ignoreFieldPattern + ')"}>}';
                     // Use engine-formula to get a field list ... Concat($Field,',')
-                    var fieldQFormula = "=Concat(" + setModifier + " '{qDef:{qFieldDefs:[\"' & $Field & '\"],qFieldLabels:[\"' & "
+                    var fieldQFormula = "=Concat(" + setModifier + " '{\"qDef\":{\"qFieldDefs\":[\"' & $Field & '\"],\"qFieldLabels\":[\"' & "
                         + (layout.boolRemovePrefix ? "If(Index($Field,'.'),Mid($Field,Index($Field,'.')+1),$Field)" : "$Field")
-                        + "&'\"]}}', ',', $FieldNo)";
+                        + "&'\"]}"
+                        + (layout.hideColIfNotPresent ? ", \"qCalcCondition\":{\"qCond\":{\"qv\":\"=Sum($Field=' & CHR(39) & $Field & CHR(39) & ')\"}}" : "")
+                        + "}', ',', $FieldNo)";
+
                     app.model.enigmaModel.evaluate(fieldQFormula)
                         .then(function (ret) {
-                            fieldList = eval('[' + ret + ']');
+
+                            fieldList = JSON.parse('[' + ret + ']');
                             if (layout.limitFields > 0 && fieldList.length > layout.limitFields) {
                                 fieldList = fieldList.slice(0, layout.limitFields)
                             }
@@ -144,7 +148,17 @@ define([], function () {
                         }).then(function (obj) {
                             thisObj = obj;
                             // Use visualization API to create a new table
-                            return app.visualization.create('table', fieldList, { title: selectedTables.join(",") });
+                            return app.visualization.create('table', fieldList,
+                                {
+                                    title: selectedTables.join(","),
+                                    multiline: { wrapTextInCells: false },
+                                    components: [{
+                                        key: "theme",
+                                        content: { hoverEffect: true },
+                                        scrollbar: { size: "medium" }
+                                    }]
+                                }
+                            );
                         }).then(function (obj) {
                             newTable = obj;
                             // get properties of new table object
