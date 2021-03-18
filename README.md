@@ -1,6 +1,8 @@
 # QuickTableViewer Extension
 Qlik Sense Extension to quickly get all fields of a data-model table into a standard Qlik Sense Table object.
 
+Explanation video: https://www.youtube.com/watch?v=NG3t-yurD4g
+
 **New 16-Mar-2021**: you have an option to turn on/off a show condition on all columns of the table. The condition is checking if the field (still) exists in the datamodel.
 If not, it won't stop the chart from showing (as it was before that update), but only hide the respective column.
 
