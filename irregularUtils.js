@@ -127,13 +127,27 @@ define([], function () {
                 if (res) {
                     var selectedTablesStr = selectedTables.map(function (e) { return '"' + e + '"' }).join(",");
 
+                    var hideColIfNotPresentFormula = "Sum($Field='&CHR(39)&$Field&CHR(39)&')";
+                    var hideColIfNotSelectedFormula = "WildMatch(Chr(124)&GetFieldSelections([" + layout.dynamicTableDimensionName + "], Chr(124), 1000)&Chr(124), '&Chr(39)&Chr(42)&Chr(124)&$Field&Chr(124)&Chr(42)&Chr(39)&')";
+                    var hideCol = layout.hideColIfNotPresent||layout.hideColIfNotSelected;
+
+                    if (layout.hideColIfNotPresent && layout.hideColIfNotSelected) {
+                        var hideColFormula = hideColIfNotPresentFormula + " And " + hideColIfNotSelectedFormula;
+                    }
+                    else if (layout.hideColIfNotPresent) {
+                        var hideColFormula = hideColIfNotPresentFormula;
+                    }
+                    else if (layout.hideColIfNotSelected) {
+                        var hideColFormula = hideColIfNotSelectedFormula;
+                    }
+
                     var setModifier = '{<$Table={' + selectedTablesStr + '},'
                         + '$Field={"(' + layout.fieldPattern + ')"}-{"(' + layout.ignoreFieldPattern + ')"}>}';
                     // Use engine-formula to get a field list ... Concat($Field,',')
                     var fieldQFormula = "=Concat(" + setModifier + " '{\"qDef\":{\"qFieldDefs\":[\"' & $Field & '\"],\"qFieldLabels\":[\"' & "
                         + (layout.boolRemovePrefix ? "If(Index($Field,'.'),Mid($Field,Index($Field,'.')+1),$Field)" : "$Field")
                         + "&'\"]}"
-                        + (layout.hideColIfNotPresent ? ", \"qCalcCondition\":{\"qCond\":{\"qv\":\"=Sum($Field=' & CHR(39) & $Field & CHR(39) & ')\"}}" : "")
+                        + (hideCol ? ", \"qCalcCondition\":{\"qCond\":{\"qv\":\"=" + hideColFormula + "\"}}" : "")
                         + "}', ',', $FieldNo)";
 
                     app.model.enigmaModel.evaluate(fieldQFormula)

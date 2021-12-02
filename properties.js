@@ -105,6 +105,16 @@ define(["qlik", "./irregularUtils"
                     ref: "hideColIfNotPresent",
                     defaultValue: true
                 }, {
+                    label: 'Setup as a dynamic table',
+                    type: 'boolean',
+                    ref: "hideColIfNotSelected",
+                    defaultValue: false
+                }, {
+                    label: 'Dynamic table dimension name',
+                    type: 'string',
+                    ref: "dynamicTableDimensionName",
+                    defaultValue: "Dimension"
+                }, {
                     label: "Get my table!",
                     component: "button",
                     action: function (context) { utils.convertToTable(qlik, context); }
