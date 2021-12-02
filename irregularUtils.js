@@ -128,7 +128,7 @@ define([], function () {
                     var selectedTablesStr = selectedTables.map(function (e) { return '"' + e + '"' }).join(",");
 
                     var hideColIfNotPresentFormula = "Sum($Field='&CHR(39)&$Field&CHR(39)&')";
-                    var hideColIfNotSelectedFormula = "WildMatch(Chr(44)&Chr(32)&Concat(GetFieldSelections([" + layout.dynamicTableDimensionName + "]), Chr(44)&Chr(32))&Chr(44), '&Chr(39)&Chr(42)&Chr(44)&Chr(32)&$Field&Chr(44)&Chr(42)&CHR(39)&')";
+                    var hideColIfNotSelectedFormula = "WildMatch(Chr(166)&GetFieldSelections([" + layout.dynamicTableDimensionName + "], Chr(166), 1000)&Chr(166), '&Chr(39)&Chr(42)&Chr(166)&$Field&Chr(166)&Chr(42)&Chr(39)&')";
                     var hideCol = layout.hideColIfNotPresent||layout.hideColIfNotSelected;
 
                     if (layout.hideColIfNotPresent && layout.hideColIfNotSelected) {
