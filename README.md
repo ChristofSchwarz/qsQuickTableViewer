@@ -1,6 +1,11 @@
 # QuickTableViewer Extension
 Qlik Sense Extension to quickly get all fields of a data-model table into a standard Qlik Sense Table object.
 
+---
+Note: new version 2024 available
+- https://www.linkedin.com/pulse/quicktableviewer-2024-qlik-sense-christof-schwarz-u6yxf/
+- https://www.youtube.com/watch?v=wP5yw4euRuQ
+---
 Explanation video: https://www.youtube.com/watch?v=NG3t-yurD4g
 
 **New 16-Mar-2021**: you have an option to turn on/off a show condition on all columns of the table. The condition is checking if the field (still) exists in the datamodel.
