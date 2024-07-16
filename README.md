@@ -21,7 +21,7 @@ If not, it won't stop the chart from showing (as it was before that update), but
 
 ### Authors: 
  - Christof Schwarz, formerly Qlik, now data/\bridge
- - [Ralf Becher](https://github.com/ralfbecher), formerly TIQ Solutions, now Vizlib
+ - [Ralf Becher](https://github.com/ralfbecher), formerly TIQ Solutions
 
 Thanks to Ralf, you can select multiple tables at once to get columns from more than 1 table. The code checks if there are connections in 
 the data model between the tables before adding its columns to avoid cartesean products with out-of-memory results. Ralf explains this 
